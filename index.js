@@ -64,7 +64,7 @@ async function run() {
     });
     //bookings
     app.get('/bookings',async(req,res)=>{
-      console.log(req.query)
+      // console.log(req.query)
       let query = {}
       if(req.query?.email){
         query = {email: req.query.email}
@@ -74,8 +74,20 @@ async function run() {
     })
     app.post('/bookings',async(req,res)=>{
       const booking = req.body
-      console.log(booking)
+      // console.log(booking)
       const result = await bookingCollection.insertOne(booking)
+      res.send(result)
+    })
+    app.patch('/bookings/:id',async(req,res)=>{
+      const id = req.params.id
+      const filter = {_id: new ObjectId(id)}
+      const updatedBooking = req.body
+      const updatedDoc = {
+        $set: {
+          status: updatedBooking.status
+        }
+      }
+      const result = await bookingCollection.updateOne(filter,updatedDoc)
       res.send(result)
     })
     app.delete('/bookings/:id',async(req,res)=>{
